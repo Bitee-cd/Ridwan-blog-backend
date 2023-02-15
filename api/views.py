@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
+from rest_framework import status
 
 # Create your views here.
 @api_view(['GET'])
@@ -16,7 +17,8 @@ def getRoutes(request):
         "category posts":"{baseUrl}/category-posts/{category-id}",
         "all authors":"{baseUrl}/authors/",
         "single author":"{baseUrl}/author-detail/{id}",
-        "author posts":"{baseUrl}/author-posts/{author-id}"
+        "author posts":"{baseUrl}/author-posts/{author-id}",
+        "newsletter":"{baseUrl}/newsletter"
 
     }
     return Response(routes)
@@ -65,3 +67,22 @@ def author_posts(request,author):
     posts=Post.objects.filter(author=author).order_by('publish')
     serializers=PostSerializer(posts,many=True)
     return Response(serializers.data)
+
+@api_view(['POST'])
+def create_newsletter(request):
+    try:
+        serializer = NewsLetterSerializer(data=request.data)
+        if serializer.valid():
+            serializer.save()
+            return Response({
+                "success":True,
+            },status=status.HTTP_201_CREATED)
+
+        else:
+            return Response({
+                "success":False,
+            },status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({
+            "success":False,
+        },status=status.HTTP_500_INTERNAL_SERVER_ERROR)

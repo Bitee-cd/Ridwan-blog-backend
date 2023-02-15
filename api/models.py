@@ -49,7 +49,11 @@ class Post(models.Model):
     summary = RichTextUploadingField(default='Empty Content')
     
 
-
-
     def __str__(self):
         return self.title
+
+class NewsLetter(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=250)
+    def __str__(self):
+        return self.name

@@ -12,16 +12,19 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+dotenv_file = os.path.join(BASE_DIR, ".env")
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&c$p5))sq^u5w$(&##sc$n^w@iy+owhmt+_vu&%w%y+rc6!=@m'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,6 +46,8 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'rest_framework',
     "corsheaders",
+    "cloudinary",
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -129,8 +134,8 @@ REST_FRAMEWORK = {
 
 #cors origins
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
     "http://localhost:3000",
+    "https://resttesttest.com"
 ]
 
 #Ckeditor Configurations
@@ -147,6 +152,12 @@ CKEDITOR_CONFIGS = {
     },
 
 }
+#cloudinary config
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME' : os.environ['CLOUD_NAME'],
+    'API_KEY' : os.environ['CLOUD_API_KEY'],
+    'API_SECRET' : os.environ['CLOUD_API_SECRET']
+}
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 STATIC_URL = 'static/'
@@ -154,6 +165,9 @@ STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+
+if os.environ['ENVIRONMENT'] == "PRODUCTION":
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"

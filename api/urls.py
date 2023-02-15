@@ -9,5 +9,7 @@ urlpatterns = [
     path('category-posts/<str:category>/',category_posts,name="category"),
     path('authors/',all_authors,name="author"),
     path('author-details/<str:pk>/',author_detail,name="author"),
-    path('author-posts/<str:author>/',author_posts,name="author")
+    path('author-posts/<str:author>/',author_posts,name="author"),
+    path('newsletter/',create_newsletter,name="newsletter")
+
 ]

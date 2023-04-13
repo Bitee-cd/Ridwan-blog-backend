@@ -15,7 +15,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 class NewsLetterSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsLetter
-        fields=['name','email']
+        fields='__all__'
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

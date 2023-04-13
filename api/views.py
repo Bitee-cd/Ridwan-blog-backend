@@ -18,7 +18,8 @@ def getRoutes(request):
         "all authors":"{baseUrl}/authors/",
         "single author":"{baseUrl}/author-detail/{id}",
         "author posts":"{baseUrl}/author-posts/{author-id}",
-        "newsletter":"{baseUrl}/newsletter"
+        "newsletter":"{baseUrl}/newsletter",
+        "get all newsletter":"{baseUrl}/newsletter",
 
     }
     return Response(routes)
@@ -67,22 +68,26 @@ def author_posts(request,author):
     posts=Post.objects.filter(author=author).order_by('publish')
     serializers=PostSerializer(posts,many=True)
     return Response(serializers.data)
+    
+@api_view(['GET'])	
+def author_posts(request,author):
+    posts=Post.objects.filter(author=author).order_by('publish')
+    serializers=PostSerializer(posts,many=True)
+    return Response(serializers.data)
 
-@api_view(['POST'])
+@api_view(['POST','GET'])
 def create_newsletter(request):
-    try:
+    if request.method == 'POST':
         serializer = NewsLetterSerializer(data=request.data)
-        if serializer.valid():
+        if serializer.is_valid():
             serializer.save()
             return Response({
                 "success":True,
-            },status=status.HTTP_201_CREATED)
-
-        else:
-            return Response({
-                "success":False,
-            },status=status.HTTP_400_BAD_REQUEST)
-    except Exception as e:
+                },status=status.HTTP_201_CREATED)
         return Response({
             "success":False,
-        },status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        },serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'GET':
+        newsletter=NewsLetter.objects.all()
+        serializers=NewsLetterSerializer(newsletter,many=True)
+        return Response(serializers.data)

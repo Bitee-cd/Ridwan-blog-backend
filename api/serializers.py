@@ -28,4 +28,14 @@ class PostSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     class Meta:
         model=Post
-        fields=['id','title','body','author','category','tags','image','summary','created_at','updated_at']	
+        fields=['id','title','body','author','category','tags','image','summary','created_at','updated_at']
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields='__all__'
+
+class MedicalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medical
+        fields='__all__'	

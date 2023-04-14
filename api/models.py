@@ -5,13 +5,14 @@ from ckeditor.fields import RichTextField
 
 
 
-# Create your models here.
+#Tag of Post Models
 class Tags(models.Model):
     name = models.CharField(max_length=30, unique=True)
 
     def __str__(self):
         return str(self.name)
 
+# Category of Post Models
 class Category(models.Model):
     name = models.CharField(max_length=100)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -20,6 +21,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+#Author of Post Model
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, blank=False)
     name = models.CharField(max_length=50)
@@ -35,6 +37,7 @@ class Author(models.Model):
     def __str__(self):
         return str(self.name)
 
+#Post Model
 class Post(models.Model):
     title=models.CharField(max_length=100)
     body = RichTextUploadingField(default="Empty Content")
@@ -52,8 +55,31 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+#NewsLetter Model
 class NewsLetter(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=250)
+    def __str__(self):
+        return self.name
+    
+#Books Mode
+class Book(models.Model):
+    title = models.CharField(max_length=255)
+    body = RichTextUploadingField(default="Empty Content")
+    summary = RichTextUploadingField(default='Empty Content')
+    link = models.CharField(max_length=255)
+    image = models.ImageField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+#Medical Supplies models
+class Medical(models.Model):
+    name = models.CharField(max_length=255)
+    description = RichTextUploadingField(default="Empty Content")
+    summary = RichTextUploadingField(default='Empty Content')
+    link  = models.CharField(max_length=255)
+    image = models.ImageField(blank=True, null=True)
+
     def __str__(self):
         return self.name

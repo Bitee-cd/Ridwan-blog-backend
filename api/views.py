@@ -11,6 +11,7 @@ from rest_framework import status
 @api_view(['GET'])
 def getRoutes(request):
     routes ={
+        
         "all posts":"{baseUrl}/posts/",
         "single post":"{baseUrl}/post-detail/{id}/",
         "all categories":"{baseUrl}/categories/",
@@ -20,6 +21,8 @@ def getRoutes(request):
         "author posts":"{baseUrl}/author-posts/{author-id}",
         "newsletter":"{baseUrl}/newsletter",
         "get all newsletter":"{baseUrl}/newsletter",
+        "get books":"{baseUrl}/books",
+        "get Medicals":"{baseUrl}/medicals",
 
     }
     return Response(routes)
@@ -41,39 +44,55 @@ def post_detail(request,pk):
 @api_view(['GET'])
 def all_categories(request):
     category= Category.objects.all()
-    serializers=CategorySerializer(category,many=True)
-    return Response(serializers.data)
+    serializer=CategorySerializer(category,many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])	
 def category_posts(request,category):
     posts=Post.objects.filter(category=category).order_by('publish')
-    serializers=PostSerializer(posts,many=True)
-    return Response(serializers.data)
+    serializer=PostSerializer(posts,many=True)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
 def all_authors(request):
     author= Author.objects.all()
-    serializers=AuthorSerializer(author,many=True)
-    return Response(serializers.data)
+    serializer=AuthorSerializer(author,many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def author_detail(request,pk):
     author=Author.objects.get(id=pk)
-    serializers=AuthorSerializer(author)
-    return Response(serializers.data)
+    serializer=AuthorSerializer(author)
+    return Response(serializer.data)
 
 @api_view(['GET'])	
 def author_posts(request,author):
     posts=Post.objects.filter(author=author).order_by('publish')
-    serializers=PostSerializer(posts,many=True)
-    return Response(serializers.data)
-    
+    paginator = PageNumberPagination()
+    result = paginator.paginate_queryset(posts,request)
+    serializer=PostSerializer(result,many=True)
+    return paginator.get_paginated_response(serializer.data)
+
+
+
 @api_view(['GET'])	
-def author_posts(request,author):
-    posts=Post.objects.filter(author=author).order_by('publish')
-    serializers=PostSerializer(posts,many=True)
-    return Response(serializers.data)
+def books(request):
+    books=Book.objects.all()
+    paginator = PageNumberPagination()
+    result = paginator.paginate_queryset(books,request)
+    serializer=BookSerializer(result,many=True)
+    return paginator.get_paginated_response(serializer.data)
+
+
+
+@api_view(['GET'])	
+def medicals(request):
+    medicals=Medical.objects.all()
+    paginator = PageNumberPagination()
+    result = paginator.paginate_queryset(medicals,request)
+    serializer=MedicalSerializer(result,many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['POST','GET'])
 def create_newsletter(request):
@@ -89,5 +108,5 @@ def create_newsletter(request):
         },serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
         newsletter=NewsLetter.objects.all()
-        serializers=NewsLetterSerializer(newsletter,many=True)
-        return Response(serializers.data)
+        serializer=NewsLetterSerializer(newsletter,many=True)
+        return Response(serializer.data)

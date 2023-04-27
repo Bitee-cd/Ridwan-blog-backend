@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "cloudinary",
     'cloudinary_storage',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -181,3 +182,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Import export settings
+IMPORT_EXPORT_USE_TRANSACTIONS = True
